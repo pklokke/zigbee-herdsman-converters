@@ -6058,7 +6058,7 @@ const converters = {
         key: ['calibrate_valve'],
         convertSet: async (entity, key, value, meta) => {
             await entity.command('hvacThermostat', 'wiserSmartCalibrateValve', {},
-                {srcEndpoint: 11, disableDefaultResponse: true, sendWhenActive: true});
+                {srcEndpoint: 11, disableDefaultResponse: true});
             return {state: {'calibrate_valve': value}};
         },
     },
@@ -6073,6 +6073,16 @@ const converters = {
         convertSet: async (entity, key, value, meta) => {
             const occupiedHeatingSetpoint = (Math.round((value * 2).toFixed(1)) / 2).toFixed(1) * 100;
             entity.saveClusterAttributeKeyValue('hvacThermostat', {occupiedHeatingSetpoint});
+            const lookup = {'manual': 1, 'schedule': 2, 'energy_saver': 3, 'holiday': 6};
+            const zonemodeNum = lookup[meta.state.zone_mode];
+            const payload = {
+                operatingmode: 0,
+                zonemode: zonemodeNum,
+                setpoint: occupiedHeatingSetpoint,
+                reserved: 0xff,
+            };
+            await entity.command('hvacThermostat', 'wiserSmartSetSetpoint', payload,
+                {srcEndpoint: 11, disableDefaultResponse: true});
             return {state: {'occupied_heating_setpoint': value}};
         },
     },
@@ -6080,7 +6090,7 @@ const converters = {
         key: ['local_temperature_calibration'],
         convertSet: (entity, key, value, meta) => {
             entity.write('hvacThermostat', {localTemperatureCalibration: Math.round(value * 10)},
-                {srcEndpoint: 11, disableDefaultResponse: true, sendWhenActive: true});
+                {srcEndpoint: 11, disableDefaultResponse: true});
             return {state: {local_temperature_calibration: value}};
         },
     },

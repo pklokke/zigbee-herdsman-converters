@@ -6992,30 +6992,7 @@ const converters = {
                 const lookup = {0: 'ongoing', 1: 'successful', 2: 'uncalibrated', 3: 'failed_e1', 4: 'failed_e2', 5: 'failed_e3'};
                 result['valve_calibration_status'] = lookup[msg.data[0xe031]];
             }
-            // Radiator thermostats command changes from UI, but report value periodically for sync,
-            // force an update of the value if it doesn't match the current existing value
-            if (meta.device.modelID === 'EH-ZB-VACT' &&
-            msg.data.hasOwnProperty('occupiedHeatingSetpoint') &&
-            meta.state.hasOwnProperty('occupied_heating_setpoint')) {
-                if (result.occupied_heating_setpoint != meta.state.occupied_heating_setpoint) {
-                    const lookup = {'manual': 1, 'schedule': 2, 'energy_saver': 3, 'holiday': 6};
-                    const zonemodeNum = lookup[meta.state.zone_mode];
-                    const setpoint = (Math.round((meta.state.occupied_heating_setpoint * 2).toFixed(1)) / 2).toFixed(1) * 100;
-                    const payload = {
-                        operatingmode: 0,
-                        zonemode: zonemodeNum,
-                        setpoint: setpoint,
-                        reserved: 0xff,
-                    };
-                    await msg.endpoint.command('hvacThermostat', 'wiserSmartSetSetpoint', payload,
-                        {srcEndpoint: 11, disableDefaultResponse: true});
-
-                    meta.logger.debug(`syncing vact setpoint was: '${result.occupied_heating_setpoint}'` +
-                    ` now: '${meta.state.occupied_heating_setpoint}'`);
-                }
-            } else {
-                publish(result);
-            }
+            publish(result);
         },
     },
     wiser_smart_setpoint_command_client: {
