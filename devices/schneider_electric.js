@@ -269,7 +269,8 @@ module.exports = [
         description: 'LK FUGA wiser wireless dimmer',
         fromZigbee: [fz.on_off, fz.brightness, fz.level_config, fz.schneider_lighting_ballast_configuration, fz.command_recall,
             fz.command_on, fz.command_off, fz.command_move, fz.command_stop],
-        toZigbee: [tz.light_onoff_brightness, tz.level_config, tz.ballast_config, tz.schneider_dimmer_mode],
+        toZigbee: [tz.light_onoff_brightness, tz.level_config, tz.light_brightness_move, tz.light_brightness_step,
+            tz.ballast_config, tz.schneider_dimmer_mode],
         endpoint: (device) => {
             return {'l1': 3, 's1': 21, 's2': 22, 's3': 23, 's4': 24};
         },
