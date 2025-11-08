@@ -1410,7 +1410,6 @@ export const definitions: DefinitionWithExtend[] = [
             fz.battery,
             fz.hvac_user_interface,
             fz.wiser_smart_thermostat,
-            fz.wiser_smart_thermostat_client,
             fz.wiser_smart_setpoint_command_client,
         ],
         toZigbee: [
@@ -1441,6 +1440,8 @@ export const definitions: DefinitionWithExtend[] = [
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {maxHeatSetpointLimit: 30 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {occupiedHeatingSetpoint: 20 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {systemMode: 4});
+            // Pre-populate the Wiser zone mode attribute (0xe010) to prevent empty read responses
+            endpoint.saveClusterAttributeKeyValue("hvacThermostat", {0xe010: {value: 1, type: 0x30}}); // Default to manual mode (1)
             // VACT needs binding to endpoint 11 due to some hardcoding in the device
             const coordinatorEndpointB = coordinatorEndpoint.getDevice().getEndpoint(11);
             const binds = ["genBasic", "genPowerCfg", "hvacThermostat"];
@@ -1464,9 +1465,9 @@ export const definitions: DefinitionWithExtend[] = [
         vendor: "Schneider Electric",
         description: "Wiser thermostat (RTS)",
         fromZigbee: [
+            fz.wiser_smart_thermostat,
             fz.battery,
             fz.hvac_user_interface,
-            fz.wiser_smart_thermostat_client,
             fz.wiser_smart_setpoint_command_client,
             fz.schneider_temperature,
         ],
@@ -1484,6 +1485,8 @@ export const definitions: DefinitionWithExtend[] = [
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {maxHeatSetpointLimit: 30 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {occupiedHeatingSetpoint: 20 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {systemMode: 4});
+            // Pre-populate Wiser zone mode attribute to prevent empty read responses
+            endpoint.saveClusterAttributeKeyValue("hvacThermostat", {0xe010: {value: 1, type: 0x30}}); // Default to manual mode
             // RTS needs binding to endpoint 11 due to some hardcoding in the device
             const coordinatorEndpointB = coordinatorEndpoint.getDevice().getEndpoint(11);
             const binds = [

@@ -4744,20 +4744,6 @@ export const schneider_temperature: Fz.Converter<"msTemperatureMeasurement", und
         return {[property]: temperature};
     },
 };
-export const wiser_smart_thermostat_client: Fz.Converter<"hvacThermostat", undefined, "read"> = {
-    cluster: "hvacThermostat",
-    type: "read",
-    convert: async (model, msg, publish, options, meta: KeyValueAny) => {
-        const response: KeyValueAny = {};
-        if (msg.data[0] === 0xe010) {
-            // Zone Mode
-            const lookup: KeyValueAny = {manual: 1, schedule: 2, energy_saver: 3, holiday: 6};
-            const zonemodeNum = meta.state.zone_mode ? lookup[meta.state.zone_mode] : 1;
-            response[0xe010] = {value: zonemodeNum, type: 0x30};
-            await msg.endpoint.readResponse(msg.cluster, msg.meta.zclTransactionSequenceNumber, response, {srcEndpoint: 11});
-        }
-    },
-};
 export const wiser_smart_setpoint_command_client: Fz.Converter<"hvacThermostat", undefined, ["commandWiserSmartSetSetpoint"]> = {
     cluster: "hvacThermostat",
     type: ["commandWiserSmartSetSetpoint"],
