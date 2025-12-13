@@ -1440,6 +1440,8 @@ export const definitions: DefinitionWithExtend[] = [
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {maxHeatSetpointLimit: 30 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {occupiedHeatingSetpoint: 20 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {systemMode: 4});
+            // Pre-populate zone mode (0xe010) for read responses - default to manual mode
+            endpoint.saveClusterAttributeKeyValue("hvacThermostat", {57360: {value: 1, type: 0x30}});
             // VACT needs binding to endpoint 11 due to some hardcoding in the device
             const coordinatorEndpointB = coordinatorEndpoint.getDevice().getEndpoint(11);
             const binds = ["genBasic", "genPowerCfg", "hvacThermostat"];
@@ -1465,6 +1467,7 @@ export const definitions: DefinitionWithExtend[] = [
         fromZigbee: [
             fz.battery,
             fz.hvac_user_interface,
+            fz.wiser_smart_thermostat,
             fz.wiser_smart_thermostat_client,
             fz.wiser_smart_setpoint_command_client,
             fz.schneider_temperature,
@@ -1483,6 +1486,8 @@ export const definitions: DefinitionWithExtend[] = [
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {maxHeatSetpointLimit: 30 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {occupiedHeatingSetpoint: 20 * 100});
             endpoint.saveClusterAttributeKeyValue("hvacThermostat", {systemMode: 4});
+            // Pre-populate zone mode (0xe010) for read responses - default to manual mode
+            endpoint.saveClusterAttributeKeyValue("hvacThermostat", {57360: {value: 1, type: 0x30}});
             // RTS needs binding to endpoint 11 due to some hardcoding in the device
             const coordinatorEndpointB = coordinatorEndpoint.getDevice().getEndpoint(11);
             const binds = [

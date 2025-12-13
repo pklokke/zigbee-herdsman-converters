@@ -5465,6 +5465,8 @@ export const wiser_smart_thermostat: Fz.Converter<"hvacThermostat", undefined, [
                 // wiserSmartZoneMode
                 const lookup: Record<number, string> = {1: "manual", 2: "schedule", 3: "energy_saver", 6: "holiday"};
                 result.zone_mode = lookup[msg.data[0xe010] as number];
+                // Cache the zone mode for future read responses (with structured format for ZCL encoding)
+                msg.endpoint.saveClusterAttributeKeyValue("hvacThermostat", {57360: {value: msg.data[0xe010], type: 0x30}});
             }
             if (msg.data[0xe011] !== undefined) {
                 // wiserSmartHactConfig
